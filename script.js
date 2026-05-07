@@ -1,3 +1,4 @@
+alert("script.js 실행됨");
 const question = document.getElementById("question");
 
     while (options.length < 5) {
