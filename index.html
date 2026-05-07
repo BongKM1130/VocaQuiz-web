@@ -9,9 +9,24 @@
 <body>
   <div class="app-container">
 
+    <!-- 초기 메뉴 화면 -->
     <section id="home-screen" class="screen active">
       <h1>📘 VOCA QUIZ</h1>
       <p class="subtitle">영단어 학습 프로그램</p>
+
+      <div class="menu-card">
+        <button id="quiz-menu-btn" class="main-btn">퀴즈 풀기</button>
+        <button id="wrong-menu-btn" class="sub-btn">오답노트</button>
+        <button id="wordbook-menu-btn" class="sub-btn">단어장</button>
+      </div>
+    </section>
+
+    <!-- 퀴즈 설정 화면 -->
+    <section id="quiz-setting-screen" class="screen">
+      <div class="top-row">
+        <button class="back-btn">← 홈</button>
+        <h2>퀴즈 설정</h2>
+      </div>
 
       <div class="menu-card">
         <label>문제 수 선택</label>
@@ -27,12 +42,11 @@
           <option value="korToEng">뜻 → 영어</option>
         </select>
 
-        <button id="start-btn" class="main-btn">퀴즈 시작</button>
-        <button id="wrong-menu-btn" class="sub-btn">오답노트</button>
-        <button id="wordbook-menu-btn" class="sub-btn">단어장</button>
+        <button id="start-btn" class="main-btn">시작하기</button>
       </div>
     </section>
 
+    <!-- 퀴즈 화면 -->
     <section id="quiz-screen" class="screen">
       <div class="top-row">
         <button class="back-btn">← 홈</button>
@@ -56,6 +70,7 @@
       <button id="next-btn" class="main-btn">다음 문제</button>
     </section>
 
+    <!-- 오답노트 화면 -->
     <section id="wrong-screen" class="screen">
       <div class="top-row">
         <button class="back-btn">← 홈</button>
@@ -69,6 +84,7 @@
       </div>
     </section>
 
+    <!-- 단어장 화면 -->
     <section id="wordbook-screen" class="screen">
       <div class="top-row">
         <button class="back-btn">← 홈</button>
