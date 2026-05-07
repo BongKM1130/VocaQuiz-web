@@ -1,3 +1,5 @@
+const screens = document.querySelectorAll(".screen");
+
 const question = document.getElementById("question");
 const result = document.getElementById("result");
 const scoreText = document.getElementById("score");
@@ -8,6 +10,10 @@ const quizCount = document.getElementById("quiz-count");
 const quizMode = document.getElementById("quiz-mode");
 const startBtn = document.getElementById("start-btn");
 const progress = document.getElementById("progress");
+
+const wrongMenuBtn = document.getElementById("wrong-menu-btn");
+const wordbookMenuBtn = document.getElementById("wordbook-menu-btn");
+const backButtons = document.querySelectorAll(".back-btn");
 
 const wrongList = document.getElementById("wrong-list");
 const reviewWrongBtn = document.getElementById("review-wrong-btn");
@@ -27,10 +33,16 @@ let sessionLimit = 10;
 let usedWords = [];
 let wrongWords = JSON.parse(localStorage.getItem("wrongWords")) || [];
 
-loadSavedScore();
 renderWrongList();
 renderWordList(words);
-startQuiz();
+
+function showScreen(screenId) {
+  screens.forEach((screen) => {
+    screen.classList.remove("active");
+  });
+
+  document.getElementById(screenId).classList.add("active");
+}
 
 function startQuiz(pool = words) {
   currentPool = pool;
@@ -46,6 +58,7 @@ function startQuiz(pool = words) {
       : Number(quizCount.value);
 
   updateScore();
+  showScreen("quiz-screen");
   loadQuestion();
 }
 
@@ -139,7 +152,6 @@ choiceButtons.forEach((btn) => {
     }
 
     updateScore();
-    saveScore();
 
     choiceButtons.forEach((button) => {
       button.disabled = true;
@@ -147,52 +159,8 @@ choiceButtons.forEach((btn) => {
   });
 });
 
-nextBtn.addEventListener("click", loadQuestion);
-
-startBtn.addEventListener("click", () => {
-  startQuiz(words);
-});
-
-reviewWrongBtn.addEventListener("click", () => {
-  if (wrongWords.length < 5) {
-    alert("오답이 5개 이상 있어야 오답 다시 풀기가 가능합니다.");
-    return;
-  }
-
-  startQuiz(wrongWords);
-});
-
-clearWrongBtn.addEventListener("click", () => {
-  wrongWords = [];
-  localStorage.removeItem("wrongWords");
-  renderWrongList();
-});
-
-searchInput.addEventListener("input", () => {
-  const keyword = searchInput.value.toLowerCase();
-
-  const filteredWords = words.filter((word) => {
-    return (
-      word.english.toLowerCase().includes(keyword) ||
-      word.meaning.includes(keyword)
-    );
-  });
-
-  renderWordList(filteredWords);
-});
-
 function updateScore() {
   scoreText.textContent = `🎯 점수 : ${score} / ${total}`;
-}
-
-function saveScore() {
-  localStorage.setItem("score", score);
-  localStorage.setItem("total", total);
-}
-
-function loadSavedScore() {
-  score = Number(localStorage.getItem("score")) || 0;
-  total = Number(localStorage.getItem("total")) || 0;
 }
 
 function addWrongWord(word) {
@@ -238,6 +206,7 @@ function renderWordList(list) {
 
 function endQuiz() {
   question.textContent = "퀴즈가 종료되었습니다!";
+  progress.textContent = "FINISH";
   result.textContent = `최종 점수 : ${score} / ${total}`;
   result.className = "result-box correct";
 
@@ -247,3 +216,53 @@ function endQuiz() {
     btn.style.backgroundColor = "#ddd";
   });
 }
+
+startBtn.addEventListener("click", () => {
+  startQuiz(words);
+});
+
+nextBtn.addEventListener("click", loadQuestion);
+
+wrongMenuBtn.addEventListener("click", () => {
+  renderWrongList();
+  showScreen("wrong-screen");
+});
+
+wordbookMenuBtn.addEventListener("click", () => {
+  renderWordList(words);
+  showScreen("wordbook-screen");
+});
+
+backButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    showScreen("home-screen");
+  });
+});
+
+reviewWrongBtn.addEventListener("click", () => {
+  if (wrongWords.length < 5) {
+    alert("오답이 5개 이상 있어야 오답 다시 풀기가 가능합니다.");
+    return;
+  }
+
+  startQuiz(wrongWords);
+});
+
+clearWrongBtn.addEventListener("click", () => {
+  wrongWords = [];
+  localStorage.removeItem("wrongWords");
+  renderWrongList();
+});
+
+searchInput.addEventListener("input", () => {
+  const keyword = searchInput.value.toLowerCase();
+
+  const filteredWords = words.filter((word) => {
+    return (
+      word.english.toLowerCase().includes(keyword) ||
+      word.meaning.includes(keyword)
+    );
+  });
+
+  renderWordList(filteredWords);
+});
