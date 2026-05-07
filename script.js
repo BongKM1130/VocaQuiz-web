@@ -1,5 +1,5 @@
 const screens = document.querySelectorAll(".screen");
-
+const quizMenuBtn = document.getElementById("quiz-menu-btn");
 const question = document.getElementById("question");
 const result = document.getElementById("result");
 const scoreText = document.getElementById("score");
@@ -263,6 +263,8 @@ searchInput.addEventListener("input", () => {
       word.meaning.includes(keyword)
     );
   });
-
+  quizMenuBtn.addEventListener("click", () => {
+  showScreen("quiz-setting-screen");
+});
   renderWordList(filteredWords);
 });
