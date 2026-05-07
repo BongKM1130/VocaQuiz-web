@@ -16,8 +16,23 @@
       <div id="score" class="score-badge">🎯 점수 : 0 / 0</div>
     </header>
 
+    <section class="control-panel">
+      <select id="quiz-count">
+        <option value="10">10문제</option>
+        <option value="20">20문제</option>
+        <option value="all">전체 문제</option>
+      </select>
+
+      <select id="quiz-mode">
+        <option value="engToKor">영어 → 뜻</option>
+        <option value="korToEng">뜻 → 영어</option>
+      </select>
+
+      <button id="start-btn">새로 시작</button>
+    </section>
+
     <section class="question-card">
-      <span class="question-label">QUESTION</span>
+      <span id="progress" class="question-label">QUESTION</span>
       <h2 id="question">문제</h2>
     </section>
 
@@ -32,6 +47,21 @@
     <section class="bottom-panel">
       <div id="result" class="result-box">결과</div>
       <button id="next-btn">다음 문제</button>
+    </section>
+
+    <section class="extra-panel">
+      <h3>📌 오답노트</h3>
+      <div class="extra-buttons">
+        <button id="review-wrong-btn">오답 다시 풀기</button>
+        <button id="clear-wrong-btn">오답노트 비우기</button>
+      </div>
+      <ul id="wrong-list"></ul>
+    </section>
+
+    <section class="extra-panel">
+      <h3>🔍 단어장 검색</h3>
+      <input id="search-input" type="text" placeholder="단어 또는 뜻 검색" />
+      <div id="word-list"></div>
     </section>
   </div>
 
