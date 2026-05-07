@@ -236,4 +236,31 @@ button:hover {
     flex-direction: column;
     gap: 4px;
   }
+  .finish-card {
+  display: grid;
+  gap: 16px;
+  background: #f8fbff;
+  border: 1px solid #dbeafe;
+  border-radius: 20px;
+  padding: 28px;
+  text-align: center;
+}
+
+#final-score {
+  font-size: 28px;
+  font-weight: 900;
+  color: #111827;
+}
+
+#final-accuracy {
+  font-size: 24px;
+  font-weight: 800;
+  color: #15803d;
+}
+
+.word-count {
+  font-weight: 800;
+  color: #4f46e5;
+  margin-bottom: 16px;
+}
 }
