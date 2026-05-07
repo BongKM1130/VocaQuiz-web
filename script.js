@@ -1,24 +1,20 @@
 const screens = document.querySelectorAll(".screen");
+
 const quizMenuBtn = document.getElementById("quiz-menu-btn");
+const wrongMenuBtn = document.getElementById("wrong-menu-btn");
+const wordbookMenuBtn = document.getElementById("wordbook-menu-btn");
+const backButtons = document.querySelectorAll(".back-btn");
+
 const question = document.getElementById("question");
 const result = document.getElementById("result");
 const scoreText = document.getElementById("score");
 const nextBtn = document.getElementById("next-btn");
 const choiceButtons = document.querySelectorAll(".choice-btn");
-const finalScore = document.getElementById("final-score");
-const finalAccuracy = document.getElementById("final-accuracy");
-const retryBtn = document.getElementById("retry-btn");
-const finishHomeBtn = document.getElementById("finish-home-btn");
-const wordCount = document.getElementById("word-count");
 
 const quizCount = document.getElementById("quiz-count");
 const quizMode = document.getElementById("quiz-mode");
 const startBtn = document.getElementById("start-btn");
 const progress = document.getElementById("progress");
-
-const wrongMenuBtn = document.getElementById("wrong-menu-btn");
-const wordbookMenuBtn = document.getElementById("wordbook-menu-btn");
-const backButtons = document.querySelectorAll(".back-btn");
 
 const wrongList = document.getElementById("wrong-list");
 const reviewWrongBtn = document.getElementById("review-wrong-btn");
@@ -26,15 +22,19 @@ const clearWrongBtn = document.getElementById("clear-wrong-btn");
 
 const searchInput = document.getElementById("search-input");
 const wordList = document.getElementById("word-list");
+const wordCount = document.getElementById("word-count");
+
+const finalScore = document.getElementById("final-score");
+const finalAccuracy = document.getElementById("final-accuracy");
+const retryBtn = document.getElementById("retry-btn");
+const finishHomeBtn = document.getElementById("finish-home-btn");
 
 let currentWord;
 let currentPool = words;
-
 let score = 0;
 let total = 0;
 let questionNumber = 0;
 let sessionLimit = 10;
-
 let usedWords = [];
 let wrongWords = JSON.parse(localStorage.getItem("wrongWords")) || [];
 
@@ -49,9 +49,34 @@ function showScreen(screenId) {
   document.getElementById(screenId).classList.add("active");
 }
 
+quizMenuBtn.addEventListener("click", () => {
+  showScreen("quiz-setting-screen");
+});
+
+wrongMenuBtn.addEventListener("click", () => {
+  renderWrongList();
+  showScreen("wrong-screen");
+});
+
+wordbookMenuBtn.addEventListener("click", () => {
+  renderWordList(words);
+  showScreen("wordbook-screen");
+});
+
+backButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    showScreen("home-screen");
+  });
+});
+
+startBtn.addEventListener("click", () => {
+  startQuiz(words);
+});
+
+nextBtn.addEventListener("click", loadQuestion);
+
 function startQuiz(pool = words) {
   currentPool = pool;
-
   score = 0;
   total = 0;
   questionNumber = 0;
@@ -73,10 +98,6 @@ function loadQuestion() {
     return;
   }
 
-  if (usedWords.length === currentPool.length) {
-    usedWords = [];
-  }
-
   do {
     currentWord = currentPool[Math.floor(Math.random() * currentPool.length)];
   } while (usedWords.includes(currentWord));
@@ -86,17 +107,14 @@ function loadQuestion() {
 
   const mode = quizMode.value;
 
-  const questionText =
+  const correctAnswer =
+    mode === "engToKor" ? currentWord.meaning : currentWord.english;
+
+  question.textContent =
     mode === "engToKor"
       ? `${currentWord.english} 뜻은?`
       : `"${currentWord.meaning}"에 해당하는 영어는?`;
 
-  const correctAnswer =
-    mode === "engToKor"
-      ? currentWord.meaning
-      : currentWord.english;
-
-  question.textContent = questionText;
   progress.textContent = `QUESTION ${questionNumber} / ${sessionLimit}`;
 
   let options = [correctAnswer];
@@ -105,9 +123,7 @@ function loadQuestion() {
     const randomWord = words[Math.floor(Math.random() * words.length)];
 
     const wrongAnswer =
-      mode === "engToKor"
-        ? randomWord.meaning
-        : randomWord.english;
+      mode === "engToKor" ? randomWord.meaning : randomWord.english;
 
     if (!options.includes(wrongAnswer)) {
       options.push(wrongAnswer);
@@ -131,9 +147,7 @@ choiceButtons.forEach((btn) => {
     const mode = quizMode.value;
 
     const correctAnswer =
-      mode === "engToKor"
-        ? currentWord.meaning
-        : currentWord.english;
+      mode === "engToKor" ? currentWord.meaning : currentWord.english;
 
     total++;
 
@@ -146,7 +160,6 @@ choiceButtons.forEach((btn) => {
       result.textContent = `❌ 오답입니다! 정답 : ${correctAnswer}`;
       result.className = "result-box wrong";
       btn.style.backgroundColor = "#ffc0c7";
-
       addWrongWord(currentWord);
 
       choiceButtons.forEach((button) => {
@@ -167,6 +180,23 @@ choiceButtons.forEach((btn) => {
 function updateScore() {
   scoreText.textContent = `🎯 점수 : ${score} / ${total}`;
 }
+
+function endQuiz() {
+  const accuracy = total === 0 ? 0 : Math.round((score / total) * 100);
+
+  finalScore.textContent = `최종 점수 : ${score} / ${total}`;
+  finalAccuracy.textContent = `정답률 : ${accuracy}%`;
+
+  showScreen("finish-screen");
+}
+
+retryBtn.addEventListener("click", () => {
+  startQuiz(currentPool);
+});
+
+finishHomeBtn.addEventListener("click", () => {
+  showScreen("home-screen");
+});
 
 function addWrongWord(word) {
   const exists = wrongWords.some((wrong) => wrong.english === word.english);
@@ -193,8 +223,22 @@ function renderWrongList() {
   });
 }
 
+reviewWrongBtn.addEventListener("click", () => {
+  if (wrongWords.length < 5) {
+    alert("오답이 5개 이상 있어야 오답 다시 풀기가 가능합니다.");
+    return;
+  }
+
+  startQuiz(wrongWords);
+});
+
+clearWrongBtn.addEventListener("click", () => {
+  wrongWords = [];
+  localStorage.removeItem("wrongWords");
+  renderWrongList();
+});
+
 function renderWordList(list) {
-  
   wordList.innerHTML = "";
   wordCount.textContent = `총 ${list.length}개 단어`;
 
@@ -211,53 +255,6 @@ function renderWordList(list) {
   });
 }
 
-function endQuiz() {
-  const accuracy =
-    total === 0 ? 0 : Math.round((score / total) * 100);
-
-  finalScore.textContent = `최종 점수 : ${score} / ${total}`;
-  finalAccuracy.textContent = `정답률 : ${accuracy}%`;
-
-  showScreen("finish-screen");
-}
-
-startBtn.addEventListener("click", () => {
-  startQuiz(words);
-});
-
-nextBtn.addEventListener("click", loadQuestion);
-
-wrongMenuBtn.addEventListener("click", () => {
-  renderWrongList();
-  showScreen("wrong-screen");
-});
-
-wordbookMenuBtn.addEventListener("click", () => {
-  renderWordList(words);
-  showScreen("wordbook-screen");
-});
-
-backButtons.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    showScreen("home-screen");
-  });
-});
-
-reviewWrongBtn.addEventListener("click", () => {
-  if (wrongWords.length < 5) {
-    alert("오답이 5개 이상 있어야 오답 다시 풀기가 가능합니다.");
-    return;
-  }
-
-  startQuiz(wrongWords);
-});
-
-clearWrongBtn.addEventListener("click", () => {
-  wrongWords = [];
-  localStorage.removeItem("wrongWords");
-  renderWrongList();
-});
-
 searchInput.addEventListener("input", () => {
   const keyword = searchInput.value.toLowerCase();
 
@@ -267,15 +264,6 @@ searchInput.addEventListener("input", () => {
       word.meaning.includes(keyword)
     );
   });
-  quizMenuBtn.addEventListener("click", () => {
-  showScreen("quiz-setting-screen");
-});
-  renderWordList(filteredWords);
-});
-retryBtn.addEventListener("click", () => {
-  startQuiz(currentPool);
-});
 
-finishHomeBtn.addEventListener("click", () => {
-  showScreen("home-screen");
+  renderWordList(filteredWords);
 });
