@@ -5,6 +5,11 @@ const result = document.getElementById("result");
 const scoreText = document.getElementById("score");
 const nextBtn = document.getElementById("next-btn");
 const choiceButtons = document.querySelectorAll(".choice-btn");
+const finalScore = document.getElementById("final-score");
+const finalAccuracy = document.getElementById("final-accuracy");
+const retryBtn = document.getElementById("retry-btn");
+const finishHomeBtn = document.getElementById("finish-home-btn");
+const wordCount = document.getElementById("word-count");
 
 const quizCount = document.getElementById("quiz-count");
 const quizMode = document.getElementById("quiz-mode");
@@ -189,7 +194,9 @@ function renderWrongList() {
 }
 
 function renderWordList(list) {
+  
   wordList.innerHTML = "";
+  wordCount.textContent = `총 ${list.length}개 단어`;
 
   list.forEach((word) => {
     const div = document.createElement("div");
@@ -205,16 +212,13 @@ function renderWordList(list) {
 }
 
 function endQuiz() {
-  question.textContent = "퀴즈가 종료되었습니다!";
-  progress.textContent = "FINISH";
-  result.textContent = `최종 점수 : ${score} / ${total}`;
-  result.className = "result-box correct";
+  const accuracy =
+    total === 0 ? 0 : Math.round((score / total) * 100);
 
-  choiceButtons.forEach((btn) => {
-    btn.textContent = "";
-    btn.disabled = true;
-    btn.style.backgroundColor = "#ddd";
-  });
+  finalScore.textContent = `최종 점수 : ${score} / ${total}`;
+  finalAccuracy.textContent = `정답률 : ${accuracy}%`;
+
+  showScreen("finish-screen");
 }
 
 startBtn.addEventListener("click", () => {
@@ -267,4 +271,11 @@ searchInput.addEventListener("input", () => {
   showScreen("quiz-setting-screen");
 });
   renderWordList(filteredWords);
+});
+retryBtn.addEventListener("click", () => {
+  startQuiz(currentPool);
+});
+
+finishHomeBtn.addEventListener("click", () => {
+  showScreen("home-screen");
 });
