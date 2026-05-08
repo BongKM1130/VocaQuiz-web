@@ -208,35 +208,6 @@ button:hover {
   border-radius: 12px;
   border: 1px solid #dbeafe;
 }
-
-@media (max-width: 768px) {
-  .app-container {
-    margin: 20px 12px;
-    padding: 18px;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-
-  .top-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  #question {
-    font-size: 26px;
-  }
-
-  .choice-btn {
-    font-size: 20px;
-  }
-
-  .word-item {
-    flex-direction: column;
-    gap: 4px;
-  }
-  
 .finish-card {
   display: grid;
   gap: 16px;
@@ -280,4 +251,38 @@ button:hover {
   font-weight: 800;
   color: #374151;
 }
+.page-title {
+  text-align: center;
+  font-size: 28px;
+  margin: 16px 0 24px;
+  color: #111827;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    margin: 20px 12px;
+    padding: 18px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  .top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #question {
+    font-size: 26px;
+  }
+
+  .choice-btn {
+    font-size: 20px;
+  }
+
+  .word-item {
+    flex-direction: column;
+    gap: 4px;
+  }
 }
