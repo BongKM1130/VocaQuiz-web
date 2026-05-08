@@ -4,6 +4,13 @@ const quizMenuBtn = document.getElementById("quiz-menu-btn");
 const wrongMenuBtn = document.getElementById("wrong-menu-btn");
 const wordbookMenuBtn = document.getElementById("wordbook-menu-btn");
 const backButtons = document.querySelectorAll(".back-btn");
+const prevPageBtn = document.getElementById("prev-page-btn");
+const nextPageBtn = document.getElementById("next-page-btn");
+const pageInfo = document.getElementById("page-info");
+
+let currentWordList = words;
+let currentPage = 1;
+const wordsPerPage = 10;
 
 const question = document.getElementById("question");
 const result = document.getElementById("result");
@@ -49,6 +56,20 @@ function showScreen(screenId) {
   document.getElementById(screenId).classList.add("active");
 }
 
+searchInput.addEventListener("input", () => {
+  const keyword = searchInput.value.toLowerCase();
+
+  const filteredWords = words.filter((word) => {
+    return (
+      word.english.toLowerCase().includes(keyword) ||
+      word.meaning.includes(keyword)
+    );
+  });
+
+  currentPage = 1;
+  renderWordList(filteredWords);
+});
+
 quizMenuBtn.addEventListener("click", () => {
   showScreen("quiz-setting-screen");
 });
@@ -59,6 +80,7 @@ wrongMenuBtn.addEventListener("click", () => {
 });
 
 wordbookMenuBtn.addEventListener("click", () => {
+  currentPage = 1;
   renderWordList(words);
   showScreen("wordbook-screen");
 });
@@ -74,6 +96,16 @@ startBtn.addEventListener("click", () => {
 });
 
 nextBtn.addEventListener("click", loadQuestion);
+
+prevPageBtn.addEventListener("click", () => {
+  currentPage--;
+  renderWordList(currentWordList);
+});
+
+nextPageBtn.addEventListener("click", () => {
+  currentPage++;
+  renderWordList(currentWordList);
+});
 
 function startQuiz(pool = words) {
   currentPool = pool;
@@ -239,10 +271,27 @@ clearWrongBtn.addEventListener("click", () => {
 });
 
 function renderWordList(list) {
+  currentWordList = list;
+
   wordList.innerHTML = "";
   wordCount.textContent = `총 ${list.length}개 단어`;
 
-  list.forEach((word) => {
+  const totalPages = Math.ceil(list.length / wordsPerPage);
+
+  if (currentPage > totalPages) {
+    currentPage = totalPages;
+  }
+
+  if (currentPage < 1) {
+    currentPage = 1;
+  }
+
+  const startIndex = (currentPage - 1) * wordsPerPage;
+  const endIndex = startIndex + wordsPerPage;
+
+  const pageWords = list.slice(startIndex, endIndex);
+
+  pageWords.forEach((word) => {
     const div = document.createElement("div");
     div.className = "word-item";
 
@@ -253,17 +302,11 @@ function renderWordList(list) {
 
     wordList.appendChild(div);
   });
+
+  pageInfo.textContent = `${currentPage} / ${totalPages || 1}`;
+
+  prevPageBtn.disabled = currentPage === 1;
+  nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
 }
-
-searchInput.addEventListener("input", () => {
-  const keyword = searchInput.value.toLowerCase();
-
-  const filteredWords = words.filter((word) => {
-    return (
-      word.english.toLowerCase().includes(keyword) ||
-      word.meaning.includes(keyword)
-    );
-  });
-
   renderWordList(filteredWords);
 });
