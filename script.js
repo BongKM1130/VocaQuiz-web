@@ -308,5 +308,3 @@ function renderWordList(list) {
   prevPageBtn.disabled = currentPage === 1;
   nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
 }
-  renderWordList(filteredWords);
-});
