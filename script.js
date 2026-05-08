@@ -4,6 +4,7 @@ const quizMenuBtn = document.getElementById("quiz-menu-btn");
 const wrongMenuBtn = document.getElementById("wrong-menu-btn");
 const wordbookMenuBtn = document.getElementById("wordbook-menu-btn");
 const backButtons = document.querySelectorAll(".back-btn");
+
 const prevPageBtn = document.getElementById("prev-page-btn");
 const nextPageBtn = document.getElementById("next-page-btn");
 const pageInfo = document.getElementById("page-info");
@@ -38,12 +39,16 @@ const finishHomeBtn = document.getElementById("finish-home-btn");
 
 let currentWord;
 let currentPool = words;
+
 let score = 0;
 let total = 0;
 let questionNumber = 0;
 let sessionLimit = 10;
+
 let usedWords = [];
 let wrongWords = JSON.parse(localStorage.getItem("wrongWords")) || [];
+
+let isWrongReviewMode = false;
 
 renderWrongList();
 renderWordList(words);
@@ -92,7 +97,7 @@ backButtons.forEach((btn) => {
 });
 
 startBtn.addEventListener("click", () => {
-  startQuiz(words);
+  startQuiz(words, false);
 });
 
 nextBtn.addEventListener("click", loadQuestion);
@@ -107,14 +112,16 @@ nextPageBtn.addEventListener("click", () => {
   renderWordList(currentWordList);
 });
 
-function startQuiz(pool = words) {
-  currentPool = pool;
+function startQuiz(pool = words, wrongReviewMode = false) {
+  currentPool = [...pool];
+  isWrongReviewMode = wrongReviewMode;
+
   score = 0;
   total = 0;
   questionNumber = 0;
   usedWords = [];
 
-  if (currentPool !== words) {
+  if (isWrongReviewMode) {
     sessionLimit = currentPool.length;
   } else {
     sessionLimit =
@@ -193,14 +200,17 @@ choiceButtons.forEach((btn) => {
       btn.style.backgroundColor = "#baf7c7";
       score++;
 
-      if (currentPool === wrongWords) {
+      if (isWrongReviewMode) {
         removeWrongWord(currentWord);
       }
     } else {
       result.textContent = `❌ 오답입니다! 정답 : ${correctAnswer}`;
       result.className = "result-box wrong";
       btn.style.backgroundColor = "#ffc0c7";
-      addWrongWord(currentWord);
+
+      if (!isWrongReviewMode) {
+        addWrongWord(currentWord);
+      }
 
       choiceButtons.forEach((button) => {
         if (button.textContent === correctAnswer) {
@@ -240,7 +250,7 @@ function endQuiz() {
 }
 
 retryBtn.addEventListener("click", () => {
-  startQuiz(currentPool);
+  startQuiz(currentPool, isWrongReviewMode);
 });
 
 finishHomeBtn.addEventListener("click", () => {
@@ -278,7 +288,7 @@ reviewWrongBtn.addEventListener("click", () => {
     return;
   }
 
-  startQuiz(wrongWords);
+  startQuiz(wrongWords, true);
 });
 
 clearWrongBtn.addEventListener("click", () => {
