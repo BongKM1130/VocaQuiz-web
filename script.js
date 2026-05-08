@@ -192,6 +192,11 @@ choiceButtons.forEach((btn) => {
       result.className = "result-box correct";
       btn.style.backgroundColor = "#baf7c7";
       score++;
+
+      if (currentPool === wrongWords) {
+        removeWrongWord(currentWord);
+  }
+    }
     } else {
       result.textContent = `❌ 오답입니다! 정답 : ${correctAnswer}`;
       result.className = "result-box wrong";
@@ -212,6 +217,15 @@ choiceButtons.forEach((btn) => {
     });
   });
 });
+
+function removeWrongWord(word) {
+  wrongWords = wrongWords.filter((wrong) => {
+    return wrong.english !== word.english;
+  });
+
+  localStorage.setItem("wrongWords", JSON.stringify(wrongWords));
+  renderWrongList();
+}
 
 function updateScore() {
   scoreText.textContent = `🎯 점수 : ${score} / ${total}`;
