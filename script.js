@@ -195,8 +195,7 @@ choiceButtons.forEach((btn) => {
 
       if (currentPool === wrongWords) {
         removeWrongWord(currentWord);
-  }
-    }
+      }
     } else {
       result.textContent = `❌ 오답입니다! 정답 : ${correctAnswer}`;
       result.className = "result-box wrong";
