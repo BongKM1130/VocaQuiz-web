@@ -263,4 +263,22 @@ button:hover {
   color: #4f46e5;
   margin-bottom: 16px;
 }
+  .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.pagination button {
+  background: #9fd0f1;
+  padding: 12px 18px;
+  font-size: 16px;
+}
+
+#page-info {
+  font-weight: 800;
+  color: #374151;
+}
 }
