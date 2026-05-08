@@ -114,10 +114,14 @@ function startQuiz(pool = words) {
   questionNumber = 0;
   usedWords = [];
 
-  sessionLimit =
-    quizCount.value === "all"
-      ? currentPool.length
-      : Number(quizCount.value);
+  if (currentPool !== words) {
+    sessionLimit = currentPool.length;
+  } else {
+    sessionLimit =
+      quizCount.value === "all"
+        ? currentPool.length
+        : Number(quizCount.value);
+  }
 
   updateScore();
   showScreen("quiz-screen");
@@ -125,7 +129,7 @@ function startQuiz(pool = words) {
 }
 
 function loadQuestion() {
-  if (questionNumber >= sessionLimit) {
+  if (questionNumber >= sessionLimit || usedWords.length >= currentPool.length) {
     endQuiz();
     return;
   }
